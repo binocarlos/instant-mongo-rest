@@ -1,0 +1,20 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    container_name: instant_mongo
+  storage:
+    build:
+      context: ./
+    container_name: instant_storage
+    ports:
+      - "8765:80"
+    links:
+      - mongo:mongo
+    volumes:
+      - ./schemas/index.js:/app/src/schemas.js
+    environment:
+      FILE: /app/src/schemas.js
+      MONGO_SERVICE_HOST: mongo
+      MONGO_SERVICE_PORT: 27017
+      MONGO_SERVICE_DATABASE: storagetest
