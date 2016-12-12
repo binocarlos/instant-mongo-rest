@@ -1,5 +1,7 @@
 var mongoose = require('mongoose')
 var bluebird = require('bluebird')
+var pino = require('pino')
+var logger = pino()
 mongoose.Promise = require('bluebird')
 
 function connectToMongo(args){
@@ -7,31 +9,31 @@ function connectToMongo(args){
 
   var isConnectedBefore = false;
   function connect() {
-      mongoose.connect(connectionUrl, {server: { auto_reconnect: true }})
+    mongoose.connect(connectionUrl, {server: { auto_reconnect: true }})
   }
   connect()
 
   mongoose.connection.on('error', function() {
-      console.log('Could not connect to MongoDB')
+    logger.error('Could not connect to MongoDB')
   })
 
   mongoose.connection.on('disconnected', function(){
-    console.log('Lost MongoDB connection...')
+    logger.error('Lost MongoDB connection...')
     if (!isConnectedBefore) connect()
   })
   mongoose.connection.on('connected', function() {
     isConnectedBefore = true
-    console.log('Connection established to MongoDB')
+    logger.info('Connection established to MongoDB')
   })
 
   mongoose.connection.on('reconnected', function() {
-    console.log('Reconnected to MongoDB')
+    logger.info('Reconnected to MongoDB')
   })
 
   // Close the Mongoose connection, when receiving SIGINT
   process.on('SIGINT', function() {
     mongoose.connection.close(function () {
-      console.log('Force to close the MongoDB conection')
+      logger.info('Force to close the MongoDB conection')
       process.exit(0)
     })
   })

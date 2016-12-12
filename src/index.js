@@ -2,6 +2,8 @@ var http = require('http')
 var fs = require('fs')
 var tools = require('./tools')
 var App = require('./app')
+var pino = require('pino')
+var logger = pino()
 
 var args = require('minimist')(process.argv, {
   alias:{
@@ -21,18 +23,16 @@ var args = require('minimist')(process.argv, {
 })
 
 if(!args.file){
-  console.error('file argument required')
+  logger.error('file argument required')
   process.exit(1)
 }
 
 if(!fs.existsSync(args.file)){
-  console.error(args.file + ' does not exist')
+  logger.error(args.file + ' does not exist')
   process.exit(1)
 }
 
 var app = App(args)
 
 var httpserver = http.createServer(app)
-httpserver.listen(args.port, function(){
-  console.log('server listening on port ' + args.port)
-})
+httpserver.listen(args.port)

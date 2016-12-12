@@ -13,7 +13,9 @@
     "method-override": "^2.3.6",
     "minimist": "^1.2.0",
     "mongoose": "^4.6.6",
-    "morgan": "^1.7.0"
+    "pino": "^3.0.5",
+    "express-pino-logger": "^2.0.0",
+    "hat": "^0.0.3"
   },
   "devDependencies": {}
 }
